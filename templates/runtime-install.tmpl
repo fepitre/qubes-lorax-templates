@@ -23,19 +23,7 @@ installpkg glibc-all-langpacks
 
 ## arch-specific packages (bootloaders etc.)
 %if basearch == "aarch64":
-    installpkg efibootmgr
-    installpkg grub2-efi-aa64-cdboot shim-aa64
-    installpkg uboot-tools
-%endif
-%if basearch in ("arm", "armhfp"):
-    installpkg efibootmgr
-    installpkg grub2-efi-arm-cdboot
-    installpkg grubby-deprecated
-    installpkg kernel-lpae
-    installpkg uboot-tools
-%endif
-%if basearch == "i386":
-    installpkg gpart
+    installpkg efibootmgr grub2-efi-aa64-cdboot grubby shim-aa64
 %endif
 %if basearch == "x86_64":
     installpkg grub2-tools-efi
@@ -48,12 +36,14 @@ installpkg glibc-all-langpacks
     installpkg grub2-tools grub2-tools-minimal grub2-tools-extra
 %endif
 %if basearch in ("ppc", "ppc64", "ppc64le"):
-    installpkg fbset hfsutils powerpc-utils lsvpd ppc64-diag
+    installpkg powerpc-utils lsvpd ppc64-diag
     installpkg grub2-tools grub2-tools-minimal grub2-tools-extra
-    installpkg grub2-${basearch}
+    # We only have ppc64le in RHEL8 26-Jul-2018
+    installpkg grub2-ppc64le
 %endif
 %if basearch == "s390x":
-    installpkg lsscsi s390utils-base s390utils-cmsfs-fuse s390utils-hmcdrvfs
+    installpkg lsscsi s390utils-base s390utils-cmsfs-fuse
+    installpkg s390utils-hmcdrvfs
 %endif
 
 ## yay, plymouth
@@ -78,7 +68,7 @@ installpkg kbd kbd-misc
 installpkg tar xz curl bzip2
 
 ## basic system stuff
-installpkg systemd-sysv systemd-units
+installpkg systemd
 installpkg rsyslog
 
 ## xorg/GUI packages
@@ -92,13 +82,13 @@ installpkg nm-connection-editor
 installpkg librsvg2
 
 ## filesystem tools
-installpkg btrfs-progs jfsutils xfsprogs reiserfs-utils gfs2-utils ntfs-3g ntfsprogs
+installpkg xfsprogs gfs2-utils
 installpkg system-storage-manager
 installpkg device-mapper-persistent-data
 installpkg xfsdump
 
 ## extra storage packages
-# hostname is needed for iscsi to work, see RHBZ#1593917
+# hostname is needed for iscsi to work, see RHBZ#1599183
 installpkg udisks2 udisks2-iscsi hostname
 
 ## extra libblockdev plugins
@@ -118,20 +108,13 @@ installpkg tigervnc-server-minimal
 installpkg tigervnc-server-module
 %endif
 installpkg net-tools
-installpkg bridge-utils
 installpkg nmap-ncat
+installpkg prefixdevname
 
 ## hardware utilities/libraries
 installpkg pciutils usbutils ipmitool
 installpkg mt-st smartmontools
 installpkg hdparm
-%if basearch not in ("aarch64", "ppc64le", "s390x"):
-installpkg pcmciautils
-%endif
-## see bug #1483278
-%if basearch not in ("arm", "armhfp"):
-    installpkg libmlx4 rdma-core
-%endif
 installpkg rng-tools
 
 installpkg qubes-release
@@ -145,20 +128,17 @@ installpkg lklug-fonts
 installpkg lohit-assamese-fonts
 installpkg lohit-bengali-fonts
 installpkg lohit-devanagari-fonts
-installpkg lohit-gu*-fonts
+installpkg lohit-gujarati-fonts
+installpkg lohit-gurmukhi-fonts
 installpkg lohit-kannada-fonts
 installpkg lohit-odia-fonts
 installpkg lohit-tamil-fonts
 installpkg lohit-telugu-fonts
 installpkg madan-fonts
-installpkg nhn-nanum-gothic-fonts
 installpkg smc-meera-fonts
 installpkg thai-scalable-waree-fonts
-installpkg vlgothic-fonts
-installpkg wqy-microhei-fonts
 installpkg sil-abyssinica-fonts
 installpkg xorg-x11-fonts-misc
-installpkg gnome-icon-theme-legacy
 installpkg aajohan-comfortaa-fonts
 installpkg abattis-cantarell-fonts
 installpkg sil-scheherazade-fonts
@@ -175,13 +155,11 @@ installpkg fpaste
 installpkg python3-pyatspi
 
 ## extra tools not required by anaconda
-installpkg vim-minimal strace lsof dump xz less eject
-installpkg wget rsync bind-utils ftp mtr vconfig
-installpkg icfg spice-vdagent
+installpkg vim-minimal strace lsof dump xz less
+installpkg rsync bind-utils ftp mtr wget
+installpkg spice-vdagent
 installpkg gdisk hexedit sg3_utils
-
-## satisfy libnotify's desktop-notification-daemon with the least crazy option
-installpkg notification-daemon
+installpkg perl-interpreter
 
 ## actually install all the requested packages
 run_pkg_transaction
